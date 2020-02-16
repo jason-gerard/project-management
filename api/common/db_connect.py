@@ -1,13 +1,14 @@
 import psycopg2
 from flask import g
+from config import DBConnection
 
 
 def make_conn():
     return psycopg2.connect(
-        host='localhost',
-        dbname='project_management',
-        user='postgres',
-        password='postgres'
+        host=DBConnection.host.value,
+        dbname=DBConnection.dbname.value,
+        user=DBConnection.user.value,
+        password=DBConnection.password.value
     )
 
 
@@ -16,4 +17,3 @@ def get_conn():
     if conn is None:
         conn = g._databse = make_conn()
     return conn
-

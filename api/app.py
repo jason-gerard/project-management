@@ -1,21 +1,16 @@
 from flask import Flask, g
-from flask_restful import Api
-
-import controllers.project as project_controller
-import controllers.company as company_controller
+from config import secret_key
+from routes.project_routes import project_routes
+from routes.company_routes import company_routes
+from routes.auth_routes import auth_routes
 
 app = Flask(__name__)
-api = Api(app)
 
-api.add_resource(project_controller.Project, '/project')
-api.add_resource(project_controller.ProjectById, '/project/<project_id>')
-api.add_resource(project_controller.GetCompanyByProjectId, '/project/<project_id>/getCompany')
-api.add_resource(project_controller.GetSubProjectsByParentProjectId, '/project/<project_id>/getSubProjects')
-api.add_resource(project_controller.GetParentProjectBySubProjectId, '/project/<project_id>/getParentProject')
+app.register_blueprint(project_routes, url_prefix='/project')
+app.register_blueprint(company_routes, url_prefix='/company')
+app.register_blueprint(auth_routes, url_prefix='/auth')
 
-api.add_resource(company_controller.Company, '/company')
-api.add_resource(company_controller.CompanyById, '/company/<company_id>')
-api.add_resource(company_controller.GetAllProjectsByCompanyId, '/company/<company_id>/getProjects')
+app.secret_key = secret_key
 
 
 @app.teardown_appcontext

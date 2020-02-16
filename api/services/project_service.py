@@ -1,9 +1,9 @@
-from flask_restful import reqparse
+from flask import jsonify
 from common.db_connect import make_conn
 import psycopg2.extras
 
 
-def get_all_projects():
+def get_projects():
     conn = make_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
@@ -16,23 +16,11 @@ def get_all_projects():
 
     cur.close()
 
-    return projects
+    return jsonify(projects)
 
 
-def create_project():
-    parser = reqparse.RequestParser()
-    parser.add_argument('name', required=True)
-    parser.add_argument('cost', type=int, required=True)
-    parser.add_argument('company_id', required=True)
-    parser.add_argument('parent_project_id')
-
-    args = parser.parse_args()
-
-    name, cost, company_id, parent_project_id = args.values()
-
+def create_project(name, cost, company_id, parent_project_id='null'):
     parent_project_id = 'null' if not parent_project_id else parent_project_id
-
-    print('parent_project_id', type(parent_project_id), parent_project_id, len(parent_project_id))
 
     conn = make_conn()
     cur = conn.cursor()
@@ -66,15 +54,7 @@ def get_project_by_id(project_id):
     return project
 
 
-def update_project_by_id(project_id):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name', required=True)
-    parser.add_argument('cost', type=int, required=True)
-
-    args = parser.parse_args()
-
-    name, cost = args.values()
-
+def update_project_by_id(project_id, name, cost):
     conn = make_conn()
     cur = conn.cursor()
 
@@ -121,4 +101,4 @@ def get_sub_projects(project_id):
 
     cur.close()
 
-    return projects
+    return jsonify(projects)

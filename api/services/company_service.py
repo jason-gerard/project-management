@@ -1,23 +1,16 @@
-from flask_restful import reqparse
+from flask import jsonify
 from common.db_connect import make_conn
 import psycopg2.extras
 
 
-def create_company():
-    parser = reqparse.RequestParser()
-    parser.add_argument('name', required=True)
-
-    args = parser.parse_args()
-
-    name = args['name']
-
+def create_company(user):
     conn = make_conn()
     cur = conn.cursor()
 
     cur.execute(f'''
                 INSERT
-                INTO company (name)
-                VALUES ('{name}')
+                INTO company (name, username, password)
+                VALUES ('{user['name']}', '{user['username']}', '{user['password']}')
                 ''')
 
     conn.commit()
@@ -43,14 +36,7 @@ def get_company_by_id(company_id):
     return company
 
 
-def update_company_by_id(company_id):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name', required=True)
-
-    args = parser.parse_args()
-
-    name = args['name']
-
+def update_company_by_id(company_id, name):
     conn = make_conn()
     cur = conn.cursor()
 
@@ -96,4 +82,21 @@ def get_all_projects_by_company_id(company_id):
 
     cur.close()
 
-    return projects
+    return jsonify(projects)
+
+
+def get_company_by_username(username):
+    conn = make_conn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cur.execute(f'''
+                SELECT *
+                FROM company
+                WHERE username = '{username}'
+                ''')
+
+    company = cur.fetchone()
+
+    cur.close()
+
+    return company
