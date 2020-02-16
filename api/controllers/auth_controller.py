@@ -1,4 +1,4 @@
-from flask import request, session
+from flask import request, session, jsonify
 from werkzeug.security import check_password_hash
 import services.company_service as company_service
 
@@ -24,14 +24,7 @@ def sign_in():
     }
 
 
-def sign_out():
-    if 'company_id' in session:
-        session.pop('company_id', None)
+def sign_out(company_id):
+    session.pop('company_id', None)
 
-        return {
-            'msg': 'User is now signed out'
-        }
-
-    return {
-        'err': 'No user to sign out'
-    }
+    return jsonify({'message': f'User of id -> {company_id} is signed out'})

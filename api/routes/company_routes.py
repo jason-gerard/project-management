@@ -1,4 +1,5 @@
-from flask import request, Blueprint, session
+from flask import request, Blueprint
+from common.route_auth_wrappers import session_required, company_owned_by_id
 import controllers.company_controller as company_controller
 
 company_routes = Blueprint('company_routes', __name__)
@@ -11,6 +12,7 @@ def company():
 
 
 @company_routes.route('/<company_id>', methods=['GET', 'PUT', 'DELETE'])
+@company_owned_by_id
 def company_by_id(company_id):
     if request.method == 'GET':
         return company_controller.get_company_by_id(company_id)
@@ -23,14 +25,14 @@ def company_by_id(company_id):
 
 
 @company_routes.route('/<company_id>/getProjects', methods=['GET'])
+@company_owned_by_id
 def get_all_projects_by_company_id(company_id):
     if request.method == 'GET':
         return company_controller.get_all_projects_by_company_id(company_id)
 
 
 @company_routes.route('/my_company', methods=['GET'])
-def my_company():
-    company_id = session['company_id']
-
+@session_required
+def my_company(session_company_id):
     if request.method == 'GET':
-        return company_controller.get_company_by_id(company_id)
+        return company_controller.get_company_by_id(session_company_id)

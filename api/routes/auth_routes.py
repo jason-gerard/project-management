@@ -1,4 +1,5 @@
 from flask import request, Blueprint
+from common.route_auth_wrappers import session_required
 import controllers.auth_controller as auth_controller
 import controllers.company_controller as company_controller
 
@@ -12,9 +13,10 @@ def sign_in():
 
 
 @auth_routes.route('/signOut', methods=['GET'])
-def sign_out():
+@session_required
+def sign_out(company_id):
     if request.method == 'GET':
-        return auth_controller.sign_out()
+        return auth_controller.sign_out(company_id)
 
 
 @auth_routes.route('/signUp', methods=['POST'])

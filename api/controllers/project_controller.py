@@ -3,12 +3,8 @@ import services.project_service as project_service
 import services.company_service as company_service
 
 
-def get_all_projects():
-    return project_service.get_projects()
-
-
-def create_project():
-    name, cost, company_id, parent_project_id = request.form.values()
+def create_project(company_id):
+    name, cost, parent_project_id = request.form.values()
 
     return project_service.create_project(name, cost, company_id, parent_project_id)
 
@@ -27,9 +23,13 @@ def delete_project_by_id(project_id):
     return project_service.delete_project_by_id(project_id)
 
 
-def get_company_by_project_id(project_id):
+def get_company_id_by_project_id(project_id):
     project = project_service.get_project_by_id(project_id)
-    company_id = project['company_id']
+    return project['company_id']
+
+
+def get_company_by_project_id(project_id):
+    company_id = get_company_id_by_project_id(project_id)
 
     return company_service.get_company_by_id(company_id)
 

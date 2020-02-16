@@ -3,22 +3,6 @@ from common.db_connect import make_conn
 import psycopg2.extras
 
 
-def get_projects():
-    conn = make_conn()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
-    cur.execute('''
-                SELECT *
-                FROM project
-                ''')
-
-    projects = cur.fetchall()
-
-    cur.close()
-
-    return jsonify(projects)
-
-
 def create_project(name, cost, company_id, parent_project_id='null'):
     parent_project_id = 'null' if not parent_project_id else parent_project_id
 
