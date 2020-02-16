@@ -1,7 +1,7 @@
 from flask import Flask, g
 from flask_restful import Api
-from api.resources.projects import Projects
-from api.resources.project import Project
+from resources.projects import Projects
+from resources.project import Project
 
 app = Flask(__name__)
 api = Api(app)
