@@ -28,10 +28,17 @@ cur = conn.cursor()
 
 commands = (
     '''
-    CREATE TABLE projects (
+    CREATE TABLE company (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL
+    )
+    ''',
+    '''
+    CREATE TABLE project (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
-        cost MONEY NOT NULL
+        cost MONEY NOT NULL,
+        company_id SERIAL REFERENCES company (id)
     )
     '''
 )
