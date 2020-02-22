@@ -5,6 +5,7 @@ import services.company_service as company_service
 
 def create_company():
     name, username, password = request.form.values()
+
     hashed_password = generate_password_hash(password)
     user = {
         'name': name,
@@ -20,7 +21,7 @@ def get_company_by_id(company_id):
 
 
 def update_company_by_id(company_id):
-    name = request.form['name']
+    name = request.form.get('name')
 
     return company_service.update_company_by_id(company_id, name)
 

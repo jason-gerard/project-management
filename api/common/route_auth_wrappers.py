@@ -8,7 +8,7 @@ def session_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if 'company_id' in session:
-            return f(session['company_id'], *args, **kwargs)
+            return f(session.get('company_id'), *args, **kwargs)
 
         return jsonify({'error': 'No session, user is not logged in'})
 
@@ -61,7 +61,7 @@ def employee_and_project_owned_by_id(f):
 
 def validate_project_owned_by_id(project_id):
     if 'company_id' in session:
-        session_company_id = session['company_id']
+        session_company_id = session.get('company_id')
         company_id = project_controller.get_company_id_by_project_id(project_id)
         return session_company_id == company_id
 
@@ -70,7 +70,7 @@ def validate_project_owned_by_id(project_id):
 
 def validate_employee_owned_by_id(employee_id):
     if 'company_id' in session:
-        session_company_id = session['company_id']
+        session_company_id = session.get('company_id')
         company_id = employee_controller.get_company_id_by_employee_id(employee_id)
         return session_company_id == company_id
 

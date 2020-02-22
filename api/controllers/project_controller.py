@@ -5,9 +5,17 @@ import services.employee_service as employee_service
 
 
 def create_project(company_id):
-    name, cost, parent_project_id = request.form.values()
+    name = request.form.get('name')
+    cost = request.form.get('cost')
+    parent_project_id = request.form.get('parent_project_id')
+    employee_ids = request.form.getlist('employees')
 
-    return project_service.create_project(name, cost, company_id, parent_project_id)
+    res = project_service.create_project(name, cost, company_id, parent_project_id or 'null')
+
+    project_id = res[0]['id']
+    [employee_service.add_employee_to_project(int(employee_id), project_id) for employee_id in employee_ids]
+
+    return res
 
 
 def get_project_by_id(project_id):
@@ -26,7 +34,7 @@ def delete_project_by_id(project_id):
 
 def get_company_id_by_project_id(project_id):
     project = project_service.get_project_by_id(project_id)
-    return project['company_id']
+    return project.get('company_id')
 
 
 def get_company_by_project_id(project_id):
@@ -41,12 +49,11 @@ def get_sub_projects_by_parent_project_id(project_id):
 
 def get_parent_project_by_sub_project_id(project_id):
     project = project_service.get_project_by_id(project_id)
-    parent_project_id = project['parent_project_id']
+    parent_project_id = project.get('parent_project_id')
 
     return project_service.get_project_by_id(parent_project_id)
 
 
 def get_employees_by_project_id(project_id):
     project_relations = project_service.get_employees_by_project_id(project_id)
-    employee_ids = [relation['employee_id'] for relation in project_relations]
-    return jsonify(list(map(employee_service.get_employee_by_id, employee_ids)))
+    return jsonify([employee_service.get_employee_by_id(relation.get('employee_id')) for relation in project_relations])

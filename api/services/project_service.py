@@ -3,22 +3,23 @@ from common.db_connect import make_conn
 import psycopg2.extras
 
 
-def create_project(name, cost, company_id, parent_project_id='null'):
-    parent_project_id = 'null' if not parent_project_id else parent_project_id
-
+def create_project(name, cost, company_id, parent_project_id):
     conn = make_conn()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cur.execute(f'''
                 INSERT
                 INTO project (name, cost, company_id, parent_project_id)
                 VALUES ('{name}', {cost}, {company_id}, {parent_project_id})
+                RETURNING id
                 ''')
+
+    project_id = cur.fetchone()
 
     conn.commit()
     cur.close()
 
-    return '', 201
+    return project_id, 201
 
 
 def get_project_by_id(project_id):

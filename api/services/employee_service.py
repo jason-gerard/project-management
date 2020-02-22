@@ -1,22 +1,24 @@
-from flask import jsonify
 from common.db_connect import make_conn
 import psycopg2.extras
 
 
 def create_employee(company_id, name):
     conn = make_conn()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cur.execute(f'''
                 INSERT
                 INTO employee (name, company_id)
                 VALUES ('{name}', {company_id})
+                RETURNING id
                 ''')
+
+    employee_id = cur.fetchone()
 
     conn.commit()
     cur.close()
 
-    return '', 201
+    return employee_id, 201
 
 
 def get_employee_by_id(employee_id):
@@ -75,7 +77,7 @@ def add_employee_to_project(employee_id, project_id):
     cur.execute(f'''
                 INSERT
                 INTO employee_project (employee_id, project_id)
-                VALUES ('{employee_id}', {project_id})
+                VALUES ({employee_id}, {project_id})
                 ''')
 
     conn.commit()
