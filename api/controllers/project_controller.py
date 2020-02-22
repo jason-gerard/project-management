@@ -1,6 +1,7 @@
-from flask import request, session
+from flask import request, jsonify
 import services.project_service as project_service
 import services.company_service as company_service
+import services.employee_service as employee_service
 
 
 def create_project(company_id):
@@ -43,3 +44,9 @@ def get_parent_project_by_sub_project_id(project_id):
     parent_project_id = project['parent_project_id']
 
     return project_service.get_project_by_id(parent_project_id)
+
+
+def get_employees_by_project_id(project_id):
+    project_relations = project_service.get_employees_by_project_id(project_id)
+    employee_ids = [relation['employee_id'] for relation in project_relations]
+    return jsonify(list(map(employee_service.get_employee_by_id, employee_ids)))

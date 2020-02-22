@@ -3,12 +3,14 @@ from config import secret_key
 from routes.project_routes import project_routes
 from routes.company_routes import company_routes
 from routes.auth_routes import auth_routes
+from routes.employee_routes import employee_routes
 
 app = Flask(__name__)
 
 app.register_blueprint(project_routes, url_prefix='/project')
 app.register_blueprint(company_routes, url_prefix='/company')
 app.register_blueprint(auth_routes, url_prefix='/auth')
+app.register_blueprint(employee_routes, url_prefix='/employee')
 
 app.secret_key = secret_key
 

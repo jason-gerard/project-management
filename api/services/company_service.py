@@ -100,3 +100,20 @@ def get_company_by_username(username):
     cur.close()
 
     return company
+
+
+def get_employees_by_company_id(company_id):
+    conn = make_conn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cur.execute(f'''
+                SELECT *
+                FROM employee
+                WHERE company_id = {company_id}
+                ''')
+
+    projects = cur.fetchall()
+
+    cur.close()
+
+    return jsonify(projects)

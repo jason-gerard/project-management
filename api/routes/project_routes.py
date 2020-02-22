@@ -37,3 +37,10 @@ def get_sub_projects_by_parent_project_id(project_id):
 def get_parent_project_by_sub_project_id(project_id):
     if request.method == 'GET':
         return project_controller.get_parent_project_by_sub_project_id(project_id)
+
+
+@project_routes.route('/<project_id>/getEmployees', methods=['GET'])
+@project_owned_by_id
+def get_employees_by_project_id(project_id):
+    if request.method == 'GET':
+        return project_controller.get_employees_by_project_id(project_id)

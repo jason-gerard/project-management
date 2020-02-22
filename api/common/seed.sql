@@ -14,9 +14,20 @@ CREATE TABLE company (
 );
 
 CREATE TABLE project (
-    id SERIAL NOT NULL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     cost MONEY NOT NULL,
     company_id INT NOT NULL REFERENCES company (id) ON DELETE CASCADE,
     parent_project_id INT REFERENCES project (id) ON DELETE CASCADE
+);
+
+CREATE TABLE employee (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    company_id INT NOT NULL REFERENCES company (id) ON DELETE CASCADE
+);
+
+CREATE TABLE employee_project (
+    employee_id INT NOT NULL REFERENCES employee (id) ON DELETE CASCADE,
+    project_id INT NOT NULL REFERENCES project (id) ON DELETE CASCADE
 );

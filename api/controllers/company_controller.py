@@ -31,3 +31,7 @@ def delete_company_by_id(company_id):
 
 def get_all_projects_by_company_id(company_id):
     return company_service.get_all_projects_by_company_id(company_id)
+
+
+def get_employees_by_company_id(company_id):
+    return company_service.get_employees_by_company_id(company_id)

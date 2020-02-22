@@ -3,16 +3,14 @@ from common.db_connect import make_conn
 import psycopg2.extras
 
 
-def create_project(name, cost, company_id, parent_project_id='null'):
-    parent_project_id = 'null' if not parent_project_id else parent_project_id
-
+def create_employee(company_id, name):
     conn = make_conn()
     cur = conn.cursor()
 
     cur.execute(f'''
                 INSERT
-                INTO project (name, cost, company_id, parent_project_id)
-                VALUES ('{name}', {cost}, {company_id}, {parent_project_id})
+                INTO employee (name, company_id)
+                VALUES ('{name}', {company_id})
                 ''')
 
     conn.commit()
@@ -21,14 +19,14 @@ def create_project(name, cost, company_id, parent_project_id='null'):
     return '', 201
 
 
-def get_project_by_id(project_id):
+def get_employee_by_id(employee_id):
     conn = make_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cur.execute(f'''
                 SELECT *
-                FROM project
-                WHERE id = {project_id}
+                FROM employee
+                WHERE id = {employee_id}
                 ''')
 
     project = cur.fetchone()
@@ -38,15 +36,14 @@ def get_project_by_id(project_id):
     return project
 
 
-def update_project_by_id(project_id, name, cost):
+def update_employee_by_id(employee_id, name):
     conn = make_conn()
     cur = conn.cursor()
 
     cur.execute(f'''
-                UPDATE project
-                SET name = '{name}',
-                    cost = {cost}
-                WHERE id = {project_id}
+                UPDATE employee
+                SET name = '{name}'
+                WHERE id = {employee_id}
                 ''')
 
     conn.commit()
@@ -55,14 +52,14 @@ def update_project_by_id(project_id, name, cost):
     return '', 201
 
 
-def delete_project_by_id(project_id):
+def delete_employee_by_id(employee_id):
     conn = make_conn()
     cur = conn.cursor()
 
     cur.execute(f'''
                 DELETE
-                FROM project
-                WHERE id = {project_id}
+                FROM employee
+                WHERE id = {employee_id}
                 ''')
 
     conn.commit()
@@ -71,31 +68,30 @@ def delete_project_by_id(project_id):
     return '', 204
 
 
-def get_sub_projects(project_id):
+def add_employee_to_project(employee_id, project_id):
     conn = make_conn()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur = conn.cursor()
 
     cur.execute(f'''
-                SELECT *
-                FROM project
-                WHERE parent_project_id = {project_id}
+                INSERT
+                INTO employee_project (employee_id, project_id)
+                VALUES ('{employee_id}', {project_id})
                 ''')
 
-    projects = cur.fetchall()
-
+    conn.commit()
     cur.close()
 
-    return jsonify(projects)
+    return '', 201
 
 
-def get_employees_by_project_id(project_id):
+def get_projects_by_employee_id(employee_id):
     conn = make_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     cur.execute(f'''
                 SELECT *
                 FROM employee_project
-                WHERE project_id = {project_id}
+                WHERE employee_id = {employee_id}
                 ''')
 
     projects = cur.fetchall()

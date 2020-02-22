@@ -5,7 +5,7 @@ import controllers.company_controller as company_controller
 company_routes = Blueprint('company_routes', __name__)
 
 
-@company_routes.route('', methods=['GET', 'POST'])
+@company_routes.route('', methods=['POST'])
 def company():
     if request.method == 'POST':
         return company_controller.create_company()
@@ -29,6 +29,13 @@ def company_by_id(company_id):
 def get_all_projects_by_company_id(company_id):
     if request.method == 'GET':
         return company_controller.get_all_projects_by_company_id(company_id)
+
+
+@company_routes.route('/<company_id>/getEmployees', methods=['GET'])
+@company_owned_by_id
+def get_employees_by_company_id(company_id):
+    if request.method == 'GET':
+        return company_controller.get_employees_by_company_id(company_id)
 
 
 @company_routes.route('/my_company', methods=['GET'])
